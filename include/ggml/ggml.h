@@ -214,7 +214,7 @@
 #define GGML_QNT_VERSION_FACTOR 1000 // do not change this
 
 #define GGML_MAX_DIMS          4
-#define GGML_MAX_NODES         16384
+#define GGML_MAX_NODES         100000
 #define GGML_MAX_PARAMS        1024
 #define GGML_MAX_CONTEXTS      64
 #define GGML_MAX_SRC           6
@@ -409,6 +409,7 @@ extern "C" {
         GGML_OP_CONV_TRANSPOSE_2D,
         GGML_OP_POOL_1D,
         GGML_OP_POOL_2D,
+        GGML_OP_PAD_REFLEC_1D,
 
         GGML_OP_UPSCALE, // nearest interpolate
 
@@ -543,7 +544,7 @@ extern "C" {
     // next prime after GGML_MAX_NODES * 2 (nodes + leafs)
     // #define GGML_GRAPH_HASHTABLE_SIZE 8273
     // #define GGML_GRAPH_HASHTABLE_SIZE 16411
-    #define GGML_GRAPH_HASHTABLE_SIZE 32771
+    #define GGML_GRAPH_HASHTABLE_SIZE 200003
 
     enum ggml_cgraph_eval_order {
         GGML_CGRAPH_EVAL_ORDER_LEFT_TO_RIGHT = 0,
@@ -1401,6 +1402,12 @@ extern "C" {
             int                   p0,
             int                   d0);
 
+    GGML_API struct ggml_tensor * ggml_pad_reflec_1d(
+            struct ggml_context * ctx,
+            struct ggml_tensor  * a,
+            int                   p0,
+            int                   p1);
+
     GGML_API struct ggml_tensor * ggml_conv_2d(
             struct ggml_context * ctx,
             struct ggml_tensor  * a,
@@ -1411,7 +1418,6 @@ extern "C" {
             int                   p1,
             int                   d0,
             int                   d1);
-
 
     // kernel size is a->ne[0] x a->ne[1]
     // stride is equal to kernel size
